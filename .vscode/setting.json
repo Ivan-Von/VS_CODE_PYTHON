@@ -1,0 +1,16 @@
+{
+    "git.suggestSmartCommit": false,
+    "git.enabled": false,
+    "explorer.confirmDragAndDrop": false,
+    "window.zoomLevel": -1,
+    "python.pythonPath":"D://python//Python",
+    "files.exclude":{
+        "**/.git":false
+    },
+    "terminal.integrated.profiles.windows": {
+        "gitBash": {		
+            "path": "E:\\PortableGit\\bin\\bash.exe"
+        }
+    },
+    "terminal.integrated.defaultProfile.windows": "gitBash"
+}
