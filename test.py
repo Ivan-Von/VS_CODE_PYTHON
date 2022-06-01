@@ -1,2 +1,3 @@
-a = [1,2,3,0,3,0,5]
-print(a.index(0))
+a = [0 for i in range(5)]
+for i in range(len(a)):
+    print(a[i])

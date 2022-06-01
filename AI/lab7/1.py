@@ -6,7 +6,7 @@ test_train = pd.read_csv('AI\\lab7\\test.csv')
 x = np.array(data_train)
 for i in range(6000):
     x[i][40] = 1
-answer = data_train['answer']
+answer = data_train['answer']   
 need = [1 for i in range(7000)]
 w = [0 for i in range(41)]
 n = 1

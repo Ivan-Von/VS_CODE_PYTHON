@@ -44,7 +44,6 @@ def __PLA__():
         global b
         b += n*answer[i]
         update()
-        # print(need)
         print(w,b)
 
 def result():
