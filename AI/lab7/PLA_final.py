@@ -4,12 +4,9 @@ import csv
 data_train = pd.read_csv('AI\\lab7\\train.csv')
 test_train = pd.read_csv('AI\\lab7\\test.csv')
 x = np.array(data_train)
+y = np.array(test_train)
 answer = data_train['answer']
-LEN = 7000
-# n = 1
-# w = [0 for i in range(40)] # 初始化
-# b = 0
-# need = [0 for i in range(LEN)]
+LEN = len(x)
 
 # 如果是真，则需要更新
 def identify(w,i):
@@ -35,7 +32,7 @@ def __PLA__():
     update()
     sum = 0
     while 1 in need:
-        sum == 1
+        sum += 1
         if sum > 100:
             break
         i = need.index(1)
@@ -44,7 +41,7 @@ def __PLA__():
         global b
         b += n*answer[i]
         update()
-        print(w,b)
+        # print(w,b)
 
 def result():
     y = np.array(test_train)
@@ -60,8 +57,11 @@ need = [0 for i in range(LEN)]
 
 if __name__ ==  '__main__':
     __PLA__()
-    right = 0
-    for i in range(1000):
-        if not identify(w,i + LEN) :
-            right += 1
-    print(right*1.0/1000)
+    print(w,b)
+    for i in range(len(y)):
+        print(i+1,' ',identify(w,i))
+    # right = 0
+    # for i in range(1000):
+    #     if not identify(w,i + LEN) :
+    #         right += 1
+    # print(right*1.0/1000)

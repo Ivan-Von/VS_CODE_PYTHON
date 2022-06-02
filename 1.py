@@ -28,19 +28,14 @@ for i in range(len(answer) - LEN):
     for j in range(40):
         p_t[i] = train[i+LEN][j]                                                                     
  
-######## 超参数设定 ########
  
 n_epoch = 2000           # 训练次数
- 
 HNum = 2                   # 各层隐藏层节点数
- 
 HCNum = 2                  # 隐藏层层数
-
 AFKind = 3                 # 激励函数种类
 emax = 0.01                # 最大允许均方差根
 LearnRate = 0.1           # 学习率
  
-######## 中间变量设定 ########
 TNum = 7                   # 特征层节点数 (特征数)
  
 SNum = len(p_s)            # 样本数
@@ -52,43 +47,26 @@ StudyTime = 0              # 学习次数
 KtoOne = 0.0               # 归一化系数
 e = 0.0                    # 均方差跟
  
-######################################################### 主要矩阵设定 ######################################################
- 
-I = zeros(INum)
- 
+I = zeros(INum) 
 Ti = zeros(TNum)
 To = zeros(TNum)
- 
 Hi = zeros((HCNum,HNum))
 Ho = zeros((HCNum,HNum))
- 
 Oi = zeros(ONum)
 Oo = zeros(ONum)
- 
 Teacher = zeros(ONum)
- 
 u = 0.2*ones((TNum,HNum))                  # 初始化 权值矩阵u
 w = 0.2*ones(((HCNum-1,HNum,HNum)))        # 初始化 权值矩阵w
 v = 0.2*ones((HNum,ONum))                  # 初始化 权值矩阵v
- 
 dw = zeros((HCNum-1,HNum,HNum))
- 
 Hb = zeros((HCNum,HNum))
 Ob = zeros(ONum)
- 
 He = zeros((HCNum,HNum))
 Oe = zeros(ONum)
- 
 p_s = array(p_s)
 t_s = array(t_s)
 p_t = array(p_t)
- 
-################################# 时间参数 #########################################
 
- 
- 
-######################################################### 方法 #######################################################
- 
 def Calcu_KtoOne(p,t):                         # 确定归一化系数
 	p_max = p.max()
 	t_max = t.max()
@@ -97,13 +75,6 @@ def Calcu_KtoOne(p,t):                         # 确定归一化系数
 def trait(p):                                  # 特征化
 	t = zeros((p.shape[0],TNum))
 	for i in range(0,p.shape[0],1):
-		# t[i,0] = p[i,0]*p[i,1]*p[i,2]
-		# t[i,1] = p[i,0]*p[i,1]
-		# t[i,2] = p[i,0]*p[i,2]
-		# t[i,3] = p[i,1]*p[i,2]
-		# t[i,4] = p[i,0]
-		# t[i,5] = p[i,1]
-		# t[i,6] = p[i,2]
 		t[i,0] = p[0]*p[1]*p[2]
 		t[i,1] = p[0]*p[1]
 		t[i,2] = p[0]*p[2]
@@ -125,8 +96,6 @@ def AF(p,kind):   # 激励函数
 		return where(p<0,0,p)
 	else:
 		pass
- 
- 
 		
 def dAF(p,kind):   # 激励函数导数
 	t = []
@@ -137,16 +106,13 @@ def dAF(p,kind):   # 激励函数导数
 	elif kind == 3:    # ReLU
 		return where(p<0,0,1) 
 	else:
-		pass
- 
-		
+		pass	
 		
 def nnff(p,t):
 	pass
 	
 def nnbp(p,t):
 	pass
-	
 
 def train(p,t):                                # 训练
 	global e
@@ -167,31 +133,17 @@ def train(p,t):                                # 训练
 	global He 
 	global Oe
 	global StudyTime
-	global KtoOne
-	
-	
-	
-	time_start = time.perf_counter()
-	
+	global KtoOne	
 	
 	e = 0.0
 	p = trait(p)
 		
 	KtoOne = Calcu_KtoOne(p,t)
-	
-	
-	time_start = time.perf_counter()
-		
 	for isamp in range(0,SNum,1):
 		To = p[isamp]/KtoOne
-		Teacher = t[isamp]/KtoOne
-		
-		
-		################ 前向 nnff #############################
-			
+		Teacher = t[isamp]/KtoOne			
 		time_start2 = time.perf_counter()
-		######## 计算各层隐藏层输入输出 Hi Ho ########
-		
+		#计算各层隐藏层输入输出 Hi Ho 
 		for k in range(0,HCNum,1):
 			if k == 0:
 				Hi[k] = dot(To,u)
@@ -199,81 +151,43 @@ def train(p,t):                                # 训练
 			else:
 				Hi[k] = dot(Ho[k-1],w[k-1])
 				Ho[k] = AF(add(Hi[k],Hb[k]),AFKind)
-		
-
-		
-		########   计算输出层输入输出 Oi Oo    ########
+		#计算输出层输入输出 Oi Oo 
 		Oi = dot(Ho[HCNum-1],v)
-		Oo = AF(add(Oi,Ob),AFKind)
-
-				
-		################ 反向 nnbp #############################
+		Oo = AF(add(Oi,Ob),AFKind)		
+		#反向 nnbp 
 		
-		######## 反向更新 v ############
-		
+		#反向更新 v 
 		Oe = subtract(Teacher,Oo)
 		Oe = multiply(Oe,dAF(add(Oi,Ob),AFKind))
 						
-		e += sum(multiply(Oe,Oe))
-		
-		
-		
-		#### v 梯度 ####		
-		
-		dv = dot(array([Oe]),array([Ho[HCNum-1]])).transpose()			  # v 的梯度
- 
-		v = add(v,dv*LearnRate)    # 更新 v
-		
-
-		
-		######## 反向更新 w #############
+		e += sum(multiply(Oe,Oe))		
+		#v梯度 		
+		dv = dot(array([Oe]),array([Ho[HCNum-1]])).transpose()			  # v 的梯度 
+		v = add(v,dv*LearnRate) 
+		#反向更新 w 
 		He = zeros((HCNum,HNum))
 	
 		for c in range(HCNum-2,-1,-1):
 			if c == HCNum-2:
 				He[c+1] = dot(v,Oe)
 				He[c+1] = multiply(He[c+1],dAF(add(Hi[c+1],Hb[c+1]),AFKind))
-				
-				
-				#dw[c] = dot(array([He[c+1]]),array([Ho[c]]).transpose())
-				dw[c] = dot(array([Ho[c]]).transpose(),array([He[c+1]]))
-				#dw[c] = dw[c].transpose()  #@@@@@@ 若结果不理想，可尝试用此条语句
-				
+				dw[c] = dot(array([Ho[c]]).transpose(),array([He[c+1]]))				
 				w[c] = add(w[c],LearnRate*dw[c])
-				
-		
-				
 			else:
 				He[c+1] = dot(w[c+1],He[c+2])
 				He[c+1] = multiply(He[c+1],dAF(add(Hi[c+1],Hb[c+1]),AFKind))
-				
 				dw[c] = dot(array([Ho[c]]).transpose(),array([He[c+1]]))	
-				
 				w[c] = add(w[c],LearnRate*dw[c])
- 
 
-		
-		######## 反向更新 u #############
-		
+		#反向更新u
 		He[0] = dot(w[0],He[1])
-		He[0] = multiply(He[0],dAF(add(Hi[0],Hb[0]),AFKind))
-				
-				
-		du = dot(array([To]).transpose(),array([He[0]]))
-				
+		He[0] = multiply(He[0],dAF(add(Hi[0],Hb[0]),AFKind))	
+		du = dot(array([To]).transpose(),array([He[0]]))			
 		u = add(u,du)
-
-		
-		######### 更新阈值 b ############
-		
-		Ob = Ob + Oe*LearnRate
-				
+		#更新阈值 b
+		Ob = Ob + Oe*LearnRate				
 		Hb = Hb + He*LearnRate
-		
-
-	
 	e = sqrt(e)
- 
 	
 def predict(p):
 				
@@ -291,35 +205,14 @@ def predict(p):
 				Ho[k] = AF(add(Hi[k],Hb[k]),AFKind)
 			
 			
-		########   计算输出层输入输出 Oi Oo    ########
+		#计算输出层输入输出 Oi Oo
 		Oi = dot(Ho[HCNum-1],v)
 		Oo = AF(add(Oi,Ob),AFKind)
 		Oo = Oo*KtoOne
 		p_result[isamp] = Oo
 	return p_result
  
-	
-time_begin = time.perf_counter()
- 
-for i in range(1,n_epoch,1):
-	if i%1000 == 0:
-		print('已训练 %d 千次 ,误差均方差 %f'%((i/1000),e))
-	train(p_s,t_s)
-print('训练完成，共训练 %d 次，误差均方差 %f'%(i,e))
-
-print('共耗时: ',time.perf_counter()-time_begin)
- 
-print()
-		
 result = predict(p_t)
- 
-print('模型预测结果 : ')
-for i in result:
-	print('%.2f'%i)
-		
-print('\n实际结果 : ')	
-for i in t_t:
-	print(i)
 right = 0
 for i in range(len(answer) - LEN):
 	if result[i] == t_t[i]:

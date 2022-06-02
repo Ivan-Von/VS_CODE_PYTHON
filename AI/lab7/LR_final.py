@@ -4,10 +4,12 @@ import math
 data_train = pd.read_csv('AI\\lab7\\train.csv')
 test_train = pd.read_csv('AI\\lab7\\test.csv')
 x = np.array(data_train)
+y = np.array(test_train)
+LEN = len(x)
 for i in range(6000):
     x[i][40] = 1
 answer = data_train['answer']   
-need = [1 for i in range(7000)]
+need = [1 for i in range(LEN)]
 w = [0 for i in range(41)]
 n = 1
 
@@ -15,14 +17,13 @@ def pi(j):
     sum = 0
     for i in range(41):
         sum += w[i]*x[j][i]
-    
     P = 1.0/(1+np.exp(-sum))
     return P
 
 def update_w():
     update = [0 for i in range(41)]
     rate = 0
-    for i in range(7000):
+    for i in range(LEN):
         rate = answer[i] - pi(i)
         for j in range(41):
             update[j] += rate * x[i][j]
@@ -30,7 +31,7 @@ def update_w():
         w[i] += n * update[i]
 
 def update_need():
-    for i in range(7000):
+    for i in range(LEN):
         if (pi(i) > 1/2 and answer[i] == 1) or (pi(i) < 1/2 and answer[i] == 0):
             need[i] = 0
         else:
@@ -38,7 +39,7 @@ def update_need():
 
 def L():
     L = 0
-    for i in range(7000):
+    for i in range(LEN):
         sum = 0
         for j in range(41):
             sum += x[i][j]*w[j]
@@ -54,9 +55,18 @@ if __name__ ==  '__main__':
             break
         update_w()
         update_need()
-    
-    right = 0
-    for i in range(1000):
-        if (pi(i+7000) > 1/2 and answer[i+7000] == 1) or (pi(i+7000) < 1/2 and answer[i+7000] == 0):
-            right += 1
-    print(format(right*1.0/1000,'.5f'))
+    print(w)
+    for i in range(len(y)):
+        sum = 0
+        for j in range(40):
+            sum += w[j]*y[i][j]
+        P = 1.0/(1+np.exp(-sum))
+        if(P > 1/2):
+            print(i+1,' ','1')
+        else:
+            print(i+1,' ','0')
+    # right = 0
+    # for i in range(1000):
+    #     if (pi(i+LEN) > 1/2 and answer[i+LEN] == 1) or (pi(i+LEN) < 1/2 and answer[i+LEN] == 0):
+    #         right += 1
+    # print(format(right*1.0/1000,'.5f'))

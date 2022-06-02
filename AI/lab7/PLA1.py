@@ -42,7 +42,7 @@ if __name__ == '__main__':
     while 1 in need:
         i += 1
         print(i)
-        if i > 10:
+        if i > 8:
             break
         else:
             update_wb()
