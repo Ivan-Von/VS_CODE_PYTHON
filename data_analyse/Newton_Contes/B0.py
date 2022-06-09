@@ -1,4 +1,5 @@
 import math
+from sympy.abc import x
 from symtable import Symbol
 import numpy as np
 from sympy import*

@@ -7,7 +7,6 @@ import numpy as np
 from math import factorial, pow
 import numpy as np
 import matplotlib.pyplot as plt
-import normalGL
 import Newton_Contes
 import sympy
 from scipy.optimize import curve_fit 
