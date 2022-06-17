@@ -5,8 +5,8 @@ data_train = pd.read_csv('AI\\lab7\\train.csv')
 test_train = pd.read_csv('AI\\lab7\\test.csv')
 x = np.array(data_train)
 y = np.array(test_train)
-LEN = len(x)
-for i in range(6000):
+LEN = 7000
+for i in range(7000):
     x[i][40] = 1
 answer = data_train['answer']   
 need = [1 for i in range(LEN)]
@@ -55,18 +55,9 @@ if __name__ ==  '__main__':
             break
         update_w()
         update_need()
-    print(w)
-    for i in range(len(y)):
-        sum = 0
-        for j in range(40):
-            sum += w[j]*y[i][j]
-        P = 1.0/(1+np.exp(-sum))
-        if(P > 1/2):
-            print(i+1,' ','1')
-        else:
-            print(i+1,' ','0')
-    # right = 0
-    # for i in range(1000):
-    #     if (pi(i+LEN) > 1/2 and answer[i+LEN] == 1) or (pi(i+LEN) < 1/2 and answer[i+LEN] == 0):
-    #         right += 1
-    # print(format(right*1.0/1000,'.5f'))
+   
+    right = 0
+    for i in range(1000):
+        if (pi(i+LEN) > 1/2 and answer[i+LEN] == 1) or (pi(i+LEN) < 1/2 and answer[i+LEN] == 0):
+            right += 1
+    print(format(right*1.0/1000,'.5f'))

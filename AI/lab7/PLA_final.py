@@ -6,7 +6,7 @@ test_train = pd.read_csv('AI\\lab7\\test.csv')
 x = np.array(data_train)
 y = np.array(test_train)
 answer = data_train['answer']
-LEN = len(x)
+LEN = 7000
 
 # 如果是真，则需要更新
 def identify(w,i):
@@ -58,10 +58,10 @@ need = [0 for i in range(LEN)]
 if __name__ ==  '__main__':
     __PLA__()
     print(w,b)
-    for i in range(len(y)):
-        print(i+1,' ',identify(w,i))
-    # right = 0
-    # for i in range(1000):
-    #     if not identify(w,i + LEN) :
-    #         right += 1
-    # print(right*1.0/1000)
+    # for i in range(len(y)):
+    #     print(i+1,' ',identify(w,i))
+    right = 0
+    for i in range(1000):
+        if not identify(w,i + LEN) :
+            right += 1
+    print(right*1.0/1000)
